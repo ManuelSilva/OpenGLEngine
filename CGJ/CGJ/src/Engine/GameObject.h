@@ -14,7 +14,7 @@ namespace Engine {
 		std::vector<EngineMath::vec4> Colors;
 		std::vector<GLubyte> Indexes;
 		GLuint VaoId;
-		GLuint VboId[3];
+		GLuint VboId[2];
 	};
 
 

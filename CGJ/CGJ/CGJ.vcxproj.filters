@@ -19,8 +19,11 @@
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{b1b69fbc-947d-4465-8056-831faaaf3dad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\SceneRelated">
+    <Filter Include="Source Files\Engine\SubSystems">
       <UniqueIdentifier>{aca8df30-a53a-4b6f-8e6e-68b04b9b7c8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\SubSystems\Scene">
+      <UniqueIdentifier>{af6ca7e0-e092-4d04-aeca-587230cc4cb5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,20 +42,20 @@
     <ClCompile Include="src\Engine\EngineCore.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Scene.cpp">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\GameObject.cpp">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Shader.cpp">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
+      <Filter>Source Files\Engine\SubSystems</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Camera.cpp">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
+      <Filter>Source Files\Engine\SubSystems</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Quaternion.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\GameObject.cpp">
+      <Filter>Source Files\Engine\SubSystems\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene.cpp">
+      <Filter>Source Files\Engine\SubSystems\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,20 +80,20 @@
     <ClInclude Include="src\Engine\Engine.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Scene.h">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\GameObject.h">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Shader.h">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Camera.h">
-      <Filter>Source Files\Engine\SceneRelated</Filter>
+      <Filter>Source Files\Engine\SubSystems</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Quaternion.h">
       <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Camera.h">
+      <Filter>Source Files\Engine\SubSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\GameObject.h">
+      <Filter>Source Files\Engine\SubSystems\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene.h">
+      <Filter>Source Files\Engine\SubSystems\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
