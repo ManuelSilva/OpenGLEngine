@@ -158,7 +158,7 @@ void createScene() {
 	//------------------------------------------
 	
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
-	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
+	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("suzzane.obj"));
 	mainScene.push(cube);
 	//----------------------------------------------------------------------------------------------------
 
@@ -247,8 +247,6 @@ Engine::Shader shaderSetUp() {
 	//	glBindAttribLocation(ProgramId, TEXCOORDS, "inTexcoord");
 	//if (NormalsLoaded)
 		//glBindAttribLocation(ProgramId, NORMALS, "inNormal");
-
-	shaderProg.createAndLink();
 
 	shaderProg.setUniform("ModelMatrix");
 	shaderProg.setUniform("ViewMatrix");
