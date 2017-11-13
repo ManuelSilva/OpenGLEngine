@@ -19,7 +19,6 @@ int main(int argc, char* argv[])
 
 		core->setUpRenderFunc(render);
 		core->setUpSceneCreateFunc(createScene);
-		//core->setUpKeyboardFunc(keyboardInput);
 		core->setUpMouseFunc(mouseInput);
 
 		core->startEngine(argc,argv);
@@ -43,41 +42,51 @@ void update(float delta)
 	float aspect = (core->_Active_GLUT_Properties.Engine_windowSize_x*1.0f) / (core->_Active_GLUT_Properties.Engine_windowSize_y*1.0f);
 	static bool isOrtho = false;
 	float speed = 1.f;
+	
+	//--------------------------------------------
+	{
+		//engine_keyboardInput
+		//initKeyboard
 
-	if (core->keyboard_state['w']) {
-		if (!isOrtho) {
-			_mainCamera.eyeVector -= EngineMath::vec3(0, 0, speed*delta);
-		}
-		else {
-			_mainCamera.orthoScaleFactor += speed*delta;
-		}
-		_mainCamera._viewDirty = true;
-	}
-	if (core->keyboard_state['s']) {
-		if (!isOrtho) {
-			_mainCamera.eyeVector += EngineMath::vec3(0, 0, speed*delta);
-		}
-		else {
-			_mainCamera.orthoScaleFactor -= speed*delta;
-		}
-		_mainCamera._viewDirty = true;
-	}
-	if (core->keyboard_state['p']) {
-		isOrtho = !isOrtho;
-		if (isOrtho) {
-			_mainCamera.setOrtho(10, -10, -10, 10, -10, 10);
-		}
-		else {
-			_mainCamera.setPerspective(30, aspect, .1f, 10);
-		}
-	}
-	if (core->keyboard_state['g']) {
-		_mainCamera.gimbalLock = !_mainCamera.gimbalLock;
-	}
-	if (core->keyboard_state['x']) {
-		exit(EXIT_SUCCESS);
-	}
 
+		if (core->keyboard_state['w']) {
+			if (!isOrtho) {
+				_mainCamera.eyeVector -= EngineMath::vec3(0, 0, speed*delta);
+			}
+			else {
+				_mainCamera.orthoScaleFactor += speed*delta;
+			}
+			_mainCamera._viewDirty = true;
+		}
+		if (core->keyboard_state['s']) {
+			if (!isOrtho) {
+				_mainCamera.eyeVector += EngineMath::vec3(0, 0, speed*delta);
+			}
+			else {
+				_mainCamera.orthoScaleFactor -= speed*delta;
+			}
+			_mainCamera._viewDirty = true;
+		}
+		if (core->keyboard_state['p']) {
+			isOrtho = !isOrtho;
+			if (isOrtho) {
+				_mainCamera.setOrtho(10, -10, -10, 10, -10, 10);
+			}
+			else {
+				_mainCamera.setPerspective(30, aspect, .1f, 10);
+			}
+		}
+		if (core->keyboard_state['g']) {
+			_mainCamera.gimbalLock = !_mainCamera.gimbalLock;
+		}
+		if (core->keyboard_state['x']) {
+			exit(EXIT_SUCCESS);
+		}
+		if (core->keyboard_state['m']) {
+			core->mouseFlag = !core->mouseFlag;
+		}
+	}
+	//---------------------------------------------
 	core->initKeyboard();
 }
 
@@ -99,21 +108,24 @@ void mouseInput(int x, int y){
 	float deltaMouseX = float(cx - gMouseX)/10;
 	float deltaMouseY = float(cy - gMouseY)/10;
 	float sensitivity = 1.0f;
-	if (!_mainCamera.gimbalLock) {
-		sensitivity = 5.f;
-	}
-	if (abs(deltaMouseX) > .5f)
-	{
-		glutWarpPointer(cx, y);
-		_mainCamera.yaw += deltaMouseX*core->getDeltaTime()*sensitivity;
-		_mainCamera._viewDirty = true;
-	}
-	if (abs(deltaMouseY) > 0.5f) {
-		glutWarpPointer(x, cy);
-		_mainCamera.pitch += deltaMouseY*core->getDeltaTime()*sensitivity;
-		_mainCamera._viewDirty = true;
-	}
+	if (core->mouseFlag) {
+
+		if (!_mainCamera.gimbalLock) {
+			sensitivity = 5.f;
+		}
+		if (abs(deltaMouseX) > .5f)
+		{
+			glutWarpPointer(cx, y);
+			_mainCamera.yaw += deltaMouseX*core->getDeltaTime()*sensitivity;
+			_mainCamera._viewDirty = true;
+		}
+		if (abs(deltaMouseY) > 0.5f) {
+			glutWarpPointer(x, cy);
+			_mainCamera.pitch += deltaMouseY*core->getDeltaTime()*sensitivity;
+			_mainCamera._viewDirty = true;
+		}
 	
+	}
 }
 
 void createScene() {
@@ -133,8 +145,8 @@ void createScene() {
 
 
 	float aspect = (core->_Active_GLUT_Properties.Engine_windowSize_x*1.0f) / (core->_Active_GLUT_Properties.Engine_windowSize_y*1.0f);
-	_mainCamera.setPerspective(30, aspect, .1f, 10);
-	_mainCamera.eyeVector = EngineMath::vec3(0,0,3);
+	_mainCamera.setPerspective(30, aspect, .1f, 100);
+	_mainCamera.eyeVector = EngineMath::vec3(0,0,5);
 
 	core->_mainScene = mainScene;
 	std::cout << "Success Creating Scene!" << std::endl;
@@ -184,7 +196,7 @@ void geometryDraw(Engine::GameObject obj) {
 
 	obj._prog.bind();
 
-	glUniformMatrix4fv(obj._prog.getUniformLocation("ModelMatrix").getGLHandle(), 1, GL_FALSE, obj.modalMatrix.m);
+	glUniformMatrix4fv(obj._prog.getUniformLocation("ModelMatrix").getGLHandle(), 1, GL_FALSE, Engine::getObjectMatrix(core->_mainScene, obj, MatrixFactory::identity()).m);
 	glUniformMatrix4fv(obj._prog.getUniformLocation("ViewMatrix").getGLHandle(), 1, GL_FALSE, _mainCamera.getViewMatrix().m);
 	glUniformMatrix4fv(obj._prog.getUniformLocation("ProjectionMatrix").getGLHandle(), 1, GL_FALSE, _mainCamera.getProjectionMatrix().m);
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)obj.geo.Vertices.size());

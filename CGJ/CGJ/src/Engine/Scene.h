@@ -24,9 +24,11 @@ namespace Engine {
 		~Scene();
 
 		void push(GameObject obj);
-		void draw(Camera camera);		
+		void draw(Camera camera);
 	};
 
+
+	EngineMath::mat4 getObjectMatrix(Scene scene, GameObject obj, EngineMath::mat4 mat);
 }
 
 #endif

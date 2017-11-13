@@ -1,14 +1,17 @@
 #include "GameObject.h"
 
+
 Engine::GameObject::GameObject()
 {
+	parentId = -1;
+	uniqueId = uniqueId = Numbers::giveId();
 }
 
 Engine::GameObject::GameObject(Shader prog, void(*drawf)(Engine::GameObject obj1), void(*geof)(Engine::GameObject obj2))
 {
+	parentId = -1;
 	uniqueId = uniqueId = Numbers::giveId();
-	modalMatrix = MatrixFactory::identity();
-	objectMatrix = MatrixFactory::identity();
+	modelMatrix = MatrixFactory::identity();
 	drawfunc = drawf;
 	geoFunc = geof;
 	_prog = prog;
@@ -52,10 +55,15 @@ void Engine::GameObject::useGeoFunc(GameObject obj)
 	}
 }
 
+EngineMath::mat4 Engine::GameObject::getModelMatrix()
+{
+	return modelMatrix;
+}
+
 Engine::GameObject Engine::duplicateGameObject(GameObject obj)
 {
 	Engine::GameObject aux = Engine::GameObject(obj._prog,obj.drawfunc, obj.geoFunc);
 	aux.geo = obj.geo;
-	aux.objectMatrix = obj.objectMatrix;
+	aux.modelMatrix = obj.modelMatrix;
 	return aux;
 }

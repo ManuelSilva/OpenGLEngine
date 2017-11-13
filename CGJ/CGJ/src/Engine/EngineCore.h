@@ -72,6 +72,7 @@ namespace Engine{
 		Engine_OpenGL_Info _OpenGLInfo;
 		unsigned int _FrameCount = 0;
 		Scene _mainScene;
+		bool mouseFlag = false;
 
 
 	private:

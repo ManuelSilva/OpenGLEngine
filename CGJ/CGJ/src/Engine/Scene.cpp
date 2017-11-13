@@ -24,4 +24,11 @@ void Engine::Scene::draw(Camera camera)
 	}
 }
 
-
+EngineMath::mat4 Engine::getObjectMatrix(Scene scene, GameObject obj, EngineMath::mat4 mat)
+{
+	mat = mat * obj.modelMatrix;
+	if (obj.parentId != -1) {
+		mat = getObjectMatrix(scene, scene._gameObjects[obj.parentId], mat);
+	}
+	return mat;
+}

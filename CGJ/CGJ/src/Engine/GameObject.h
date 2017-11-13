@@ -15,9 +15,9 @@ namespace Engine {
 		void(*geoFunc)(Engine::GameObject obj);
 
 	public:
+		EngineMath::mat4 modelMatrix;
 		unsigned int uniqueId;
 		unsigned int parentId;
-		EngineMath::mat4 modalMatrix, objectMatrix;
 		std::vector<unsigned int> children;
 		std::string tag;
 		Shader _prog;
@@ -31,6 +31,7 @@ namespace Engine {
 		void setDrawFunction(void(*func)(Engine::GameObject obj));
 		void setGeometryFunction(void(*func)(Engine::GameObject obj));
 		void useGeoFunc(GameObject obj);
+		EngineMath::mat4 getModelMatrix();
 		
 	};
 		GameObject duplicateGameObject(GameObject obj);

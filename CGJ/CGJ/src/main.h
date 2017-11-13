@@ -27,7 +27,6 @@ Engine::Camera _mainCamera(MatrixFactory::identity());
 void render();
 void update(float delta);
 
-void keyboardInput(unsigned char key, int x, int y);
 void mouseInput(int x, int y);
 
 void createScene();
