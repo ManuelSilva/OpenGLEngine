@@ -29,6 +29,7 @@ void Engine::EngineCore::startEngine(int argc, char* argv[]){
 	setupGLUT(argc, argv);
 	setupGLEW();
 	setupOpenGL();
+	initKeyboard();
 	sceneCreateFunc();
 	geoCreateFunc();
 	setupCallbacks();
@@ -171,7 +172,15 @@ float Engine::EngineCore::getDeltaTime()
 	return delta_time;
 }
 
-
+void Engine::EngineCore::initKeyboard()
+{
+	keyboard_state.clear();
+	std::vector<char> inputs = { 'w','a','s','d','e','q','p','g','x' };
+	for each (char var in inputs)
+	{
+		keyboard_state[var] = false;
+	}
+}
 
 //---------------------------------------------------------------------------------
 
@@ -236,17 +245,51 @@ void Engine::engine_PostRedisplay() {
 }
 
 void Engine::engine_keyboardInput(unsigned char key, int x, int y)
+
 {
 	GETCORE
+	core->initKeyboard();
 	switch (key) {
-		case 'Q':
-		case 'q':
-			core->shutdown();
-			glutDestroyWindow(_WindowHandle);
-			break;
-		default:
-			break;
+	case 'W':
+	case 'w':
+		core->keyboard_state['w'] = true;
+		break;
+	case 'S':
+	case 's':
+		core->keyboard_state['s'] = true;
+		break;
+	case 'A':
+	case 'a':
+		core->keyboard_state['a'] = true;
+		break;
+	case 'D':
+	case 'd':
+		core->keyboard_state['d'] = true;
+		break;
+	case 'E':
+	case 'e':
+		core->keyboard_state['e'] = true;
+		break;
+	case 'Q':
+	case 'q':
+		core->keyboard_state['q'] = true;
+		break;
+	case 'P':
+	case 'p':
+		core->keyboard_state['p'] = true;
+		break;
+	case 'G':
+	case 'g':
+		core->keyboard_state['g'] = true;
+		break;
+	case 'X':
+	case 'x':
+		core->keyboard_state['x'] = true;
+		break;
+	default:
+		break;
 	}
+	glutPostRedisplay();
 }
 
 void Engine::engine_mouseInput(int x, int y)

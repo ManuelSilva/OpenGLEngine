@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <random>
+#include <map>
 
 Engine::EngineCore* Engine::EngineCore::_EngineCore_instance;	
 #define SHADER_PATH ".\\..\\..\\dependencies\\shaders\\"

@@ -65,11 +65,14 @@ namespace Engine{
 		void(*sceneCreateFunc)() = engine_CreateScene;
 		void(*keyboardFunc)(unsigned char key, int x, int y) = engine_keyboardInput;
 		void(*mouseFunc)(int x, int y) = engine_mouseInput;
+
 	public:
+		std::map<char, bool> keyboard_state;
 		Engine_GLUT_Properties _Active_GLUT_Properties;
 		Engine_OpenGL_Info _OpenGLInfo;
 		unsigned int _FrameCount = 0;
 		Scene _mainScene;
+
 
 	private:
 		EngineCore();
@@ -100,6 +103,8 @@ namespace Engine{
 
 
 		float getDeltaTime();
+
+		void initKeyboard();
 
 	
 		};

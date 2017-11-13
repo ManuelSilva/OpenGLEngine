@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
 		core->setUpRenderFunc(render);
 		core->setUpSceneCreateFunc(createScene);
-		core->setUpKeyboardFunc(keyboardInput);
+		//core->setUpKeyboardFunc(keyboardInput);
 		core->setUpMouseFunc(mouseInput);
 
 		core->startEngine(argc,argv);
@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
 
 void render() {
 	GETCORE
+	_mainCamera.ApplyViewMatrix();
 	update(core->getDeltaTime());
 	++core->_FrameCount;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -39,7 +40,45 @@ void render() {
 void update(float delta)
 {
 	GETCORE
-	_mainCamera.ApplyViewMatrix();
+	float aspect = (core->_Active_GLUT_Properties.Engine_windowSize_x*1.0f) / (core->_Active_GLUT_Properties.Engine_windowSize_y*1.0f);
+	static bool isOrtho = false;
+	float speed = 1.f;
+
+	if (core->keyboard_state['w']) {
+		if (!isOrtho) {
+			_mainCamera.eyeVector -= EngineMath::vec3(0, 0, speed*delta);
+		}
+		else {
+			_mainCamera.orthoScaleFactor += speed*delta;
+		}
+		_mainCamera._viewDirty = true;
+	}
+	if (core->keyboard_state['s']) {
+		if (!isOrtho) {
+			_mainCamera.eyeVector += EngineMath::vec3(0, 0, speed*delta);
+		}
+		else {
+			_mainCamera.orthoScaleFactor -= speed*delta;
+		}
+		_mainCamera._viewDirty = true;
+	}
+	if (core->keyboard_state['p']) {
+		isOrtho = !isOrtho;
+		if (isOrtho) {
+			_mainCamera.setOrtho(10, -10, -10, 10, -10, 10);
+		}
+		else {
+			_mainCamera.setPerspective(30, aspect, .1f, 10);
+		}
+	}
+	if (core->keyboard_state['g']) {
+		_mainCamera.gimbalLock = !_mainCamera.gimbalLock;
+	}
+	if (core->keyboard_state['x']) {
+		exit(EXIT_SUCCESS);
+	}
+
+	core->initKeyboard();
 }
 
 //-----------------------------------------------------
@@ -75,72 +114,6 @@ void mouseInput(int x, int y){
 		_mainCamera._viewDirty = true;
 	}
 	
-}
-
-void keyboardInput(unsigned char key, int x, int y)
-{
-	GETCORE
-	float delta = core->getDeltaTime();
-	float aspect = (core->_Active_GLUT_Properties.Engine_windowSize_x*1.0f) / (core->_Active_GLUT_Properties.Engine_windowSize_y*1.0f);
-	static bool isOrtho = false;
-	float speed = 1.f;
-	switch (key) {
-
-		case 'W':
-		case 'w':
-			if (!isOrtho) {
-				_mainCamera.eyeVector -= EngineMath::vec3(0, 0, speed*delta);
-			}
-			else {
-				_mainCamera.orthoScaleFactor += speed*delta;
-			}
-				_mainCamera._viewDirty = true;
-			break;
-		case 'S':
-		case 's':
-			if(!isOrtho) {
-				_mainCamera.eyeVector += EngineMath::vec3(0, 0, speed*delta);
-			}
-			else {
-				_mainCamera.orthoScaleFactor -= speed*delta;
-			}
-			_mainCamera._viewDirty = true;
-			break;
-		case 'A':
-		case 'a':
-			break;
-		case 'D':
-		case 'd':
-			break;
-		case 'E':
-		case 'e':
-			break;
-		case 'Q':
-		case 'q':
-			break;
-		case 'P':
-		case 'p':
-			isOrtho = !isOrtho;
-			if (isOrtho) {
-				_mainCamera.setOrtho(10,-10,-10,10,-10,10);
-			}
-			else {
-				_mainCamera.setPerspective(30, aspect, .1f, 10);
-			}
-
-			break;
-		case 'G':
-		case 'g':
-			_mainCamera.gimbalLock = !_mainCamera.gimbalLock;
-			break;
-		case 'X':
-		case 'x':
-			exit(EXIT_SUCCESS);
-			break;
-		default:
-			break;
-	}
-	glutPostRedisplay();
 }
 
 void createScene() {
