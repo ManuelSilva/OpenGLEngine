@@ -4,18 +4,9 @@
 #include <vector>
 #include "../Math/Math.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 namespace Engine {
-
-
-	struct Geometry {
-		EngineMath::glVec4 color = EngineMath::glVec4(EngineMath::vec4(1.0f,1.0f,1.0f,1.0f));
-		std::vector<EngineMath::vec4> Vertices;
-		std::vector<EngineMath::vec4> Colors;
-		std::vector<GLubyte> Indexes;
-		GLuint VaoId;
-		GLuint VboId[2];
-	};
 
 
 	class GameObject {
@@ -30,7 +21,7 @@ namespace Engine {
 		std::vector<unsigned int> children;
 		std::string tag;
 		Shader _prog;
-		Geometry geo;
+		Mesh::Mesh geo;
 	public:
 		GameObject();
 		GameObject(Shader prog, void(*drawfunc)(Engine::GameObject obj1), void(*geofunc)(Engine::GameObject obj2));

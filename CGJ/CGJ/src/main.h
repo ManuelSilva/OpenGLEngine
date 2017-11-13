@@ -13,13 +13,12 @@
 
 Engine::EngineCore* Engine::EngineCore::_EngineCore_instance;	
 #define SHADER_PATH ".\\..\\..\\dependencies\\shaders\\"
+#define OBJ_PATH ".\\..\\..\\dependencies\\assets\\models\\blender_2.79\\"
 
-typedef struct {
-	EngineMath::vec4 XYZW;
-}Vertex;
+#define VERTICES 0
+#define TEXCOORDS 1
+#define NORMALS 2
 
-GLint UboId, UniformId;
-const GLuint UBO_BP = 0;
 
 Engine::Camera _mainCamera(MatrixFactory::identity());
 

@@ -22,6 +22,7 @@
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\EngineCore.cpp" />
     <ClCompile Include="src\Engine\GameObject.cpp" />
+    <ClCompile Include="src\Engine\Mesh.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Engine\EngineCore.h" />
     <ClInclude Include="src\Engine\GameObject.h" />
+    <ClInclude Include="src\Engine\Mesh.h" />
     <ClInclude Include="src\Engine\Scene.h" />
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\main.h" />
