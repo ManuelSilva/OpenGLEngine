@@ -175,7 +175,7 @@ float Engine::EngineCore::getDeltaTime()
 void Engine::EngineCore::initKeyboard()
 {
 	keyboard_state.clear();
-	std::vector<char> inputs = { 'w','a','s','d','e','q','p','g','x','m' };
+	std::vector<char> inputs = { 'w','a','s','d','e','q','p','g','x','m','+','-'};
 	for each (char var in inputs)
 	{
 		keyboard_state[var] = false;
@@ -249,6 +249,7 @@ void Engine::engine_keyboardInput(unsigned char key, int x, int y)
 {
 	GETCORE
 	core->initKeyboard();
+	//std::cout << "Pressed Key --> " << key << std::endl;
 	switch (key) {
 	case 'W':
 	case 'w':
@@ -289,6 +290,12 @@ void Engine::engine_keyboardInput(unsigned char key, int x, int y)
 	case 'M':
 	case 'm':
 		core->keyboard_state['m'] = true;
+		break;
+	case '+':
+		core->keyboard_state['+'] = true;
+		break;
+	case '-':
+		core->keyboard_state['-'] = true;
 		break;
 	default:
 		break;

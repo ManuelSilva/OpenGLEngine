@@ -49,7 +49,7 @@ void update(float delta)
 		//initKeyboard
 
 
-		if (core->keyboard_state['w']) {
+		if (core->keyboard_state['+']) {
 			if (!isOrtho) {
 				_mainCamera.eyeVector -= EngineMath::vec3(0, 0, speed*delta);
 			}
@@ -58,13 +58,33 @@ void update(float delta)
 			}
 			_mainCamera._viewDirty = true;
 		}
-		if (core->keyboard_state['s']) {
+		if (core->keyboard_state['-']) {
 			if (!isOrtho) {
 				_mainCamera.eyeVector += EngineMath::vec3(0, 0, speed*delta);
 			}
 			else {
 				_mainCamera.orthoScaleFactor -= speed*delta;
 			}
+			_mainCamera._viewDirty = true;
+		}
+		float sensitivity = 1.0f;
+		if (!_mainCamera.gimbalLock) {
+			sensitivity = 100.0f;
+		}
+		if (core->keyboard_state['w']) {
+			_mainCamera.pitch += delta*sensitivity;
+			_mainCamera._viewDirty = true;
+		}
+		if (core->keyboard_state['s']) {
+			_mainCamera.pitch -= delta * sensitivity;
+			_mainCamera._viewDirty = true;
+		}
+		if (core->keyboard_state['a']) {
+			_mainCamera.yaw += delta * sensitivity;
+			_mainCamera._viewDirty = true;
+		}
+		if (core->keyboard_state['d']) {
+			_mainCamera.yaw -= delta * sensitivity;
 			_mainCamera._viewDirty = true;
 		}
 		if (core->keyboard_state['p']) {
@@ -85,9 +105,10 @@ void update(float delta)
 		if (core->keyboard_state['m']) {
 			core->mouseFlag = !core->mouseFlag;
 		}
+		
+		core->initKeyboard();
 	}
 	//---------------------------------------------
-	core->initKeyboard();
 }
 
 //-----------------------------------------------------
@@ -113,7 +134,7 @@ void mouseInput(int x, int y){
 		if (!_mainCamera.gimbalLock) {
 			sensitivity = 5.f;
 		}
-		if (abs(deltaMouseX) > .5f)
+		if (abs(deltaMouseX) > 0.5f)
 		{
 			glutWarpPointer(cx, y);
 			_mainCamera.yaw += deltaMouseX*core->getDeltaTime()*sensitivity;
