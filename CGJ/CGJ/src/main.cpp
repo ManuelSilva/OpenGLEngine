@@ -160,22 +160,48 @@ void createScene() {
 
 	Engine::GameObject floor = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	floor.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
-	floor.modelMatrix = MatrixFactory::ScaleMatrix(EngineMath::vec3(10,10,.5)) * MatrixFactory::TranslationMatrix(EngineMath::vec3(0,0,-10)) * floor.modelMatrix;
-
+	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(15,15,.5)),false);
+	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(.2, .2, .2)) * MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 0, -3)), true);
+	
 
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
-	//cube.setParent(floor);
+	cube.setParent(floor);
+	cube.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 3, 1.8)), true);
+
 
 	Engine::GameObject paralelogram = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	paralelogram.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("shape2.obj"));
-	paralelogram.modelMatrix = MatrixFactory::RotationYMatrix(PI / 2) * paralelogram.modelMatrix;
-	//paralelogram.setParent(floor);
+	paralelogram.setParent(floor);
+	paralelogram.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, -3, 1.8)) * MatrixFactory::RotationYMatrix(PI / 2), true);
+	
+
+
+	Engine::GameObject triangle1 = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
+	triangle1.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("triangle.obj"));
+	triangle1.setParent(floor);
+	triangle1.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 0, 1.8)) * MatrixFactory::RotationXMatrix(PI/2), true);
+	Engine::GameObject triangle2 = Engine::duplicateGameObject(triangle1);
+	Engine::GameObject triangle3 = Engine::duplicateGameObject(triangle1);
+	Engine::GameObject triangle4 = Engine::duplicateGameObject(triangle1);
+	Engine::GameObject triangle5 = Engine::duplicateGameObject(triangle1);
+
+	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(2, 2, 0)), true);
+	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(2, 8, 0))* MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)), true);
+	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-4, 4, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)), true);
+	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(8, 8, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)), true);
 
 
 	mainScene.push(floor);
-	mainScene.push(paralelogram);
 	mainScene.push(cube);
+	mainScene.push(paralelogram);
+
+	mainScene.push(triangle1);
+	mainScene.push(triangle2);
+	mainScene.push(triangle3);
+	mainScene.push(triangle4);
+	mainScene.push(triangle5);
+
 	//----------------------------------------------------------------------------------------------------
 
 	//----------------------------------------------------------------------------------------------------
@@ -233,7 +259,7 @@ void geometryDraw(Engine::GameObject obj) {
 
 	obj._prog.bind();
 
-	glUniformMatrix4fv(obj._prog.getUniformLocation("ModelMatrix").getGLHandle(), 1, GL_FALSE, Engine::getObjectMatrix(core->_mainScene, obj, MatrixFactory::identity()).m);
+	glUniformMatrix4fv(obj._prog.getUniformLocation("ModelMatrix").getGLHandle(), 1, GL_FALSE, Engine::getModelMatrix(core->_mainScene, obj).m);
 	glUniformMatrix4fv(obj._prog.getUniformLocation("ViewMatrix").getGLHandle(), 1, GL_FALSE, _mainCamera.getViewMatrix().m);
 	glUniformMatrix4fv(obj._prog.getUniformLocation("ProjectionMatrix").getGLHandle(), 1, GL_FALSE, _mainCamera.getProjectionMatrix().m);
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)obj.geo.Vertices.size());

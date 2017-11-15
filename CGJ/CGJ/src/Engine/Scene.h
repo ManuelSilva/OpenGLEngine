@@ -29,6 +29,7 @@ namespace Engine {
 
 
 	EngineMath::mat4 getObjectMatrix(Scene scene, GameObject obj, EngineMath::mat4 mat);
+	EngineMath::mat4 getModelMatrix(Scene scene, GameObject obj);
 }
 
 #endif

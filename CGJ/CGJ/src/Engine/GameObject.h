@@ -15,6 +15,7 @@ namespace Engine {
 		void(*geoFunc)(Engine::GameObject obj);
 
 	public:
+		EngineMath::mat4 tranformations;
 		EngineMath::mat4 modelMatrix;
 		unsigned int uniqueId;
 		unsigned int parentId;
@@ -32,7 +33,7 @@ namespace Engine {
 		void setGeometryFunction(void(*func)(Engine::GameObject obj));
 		void useGeoFunc(GameObject obj);
 		EngineMath::mat4 getModelMatrix();
-		
+		void push(EngineMath::mat4 transformation, bool apply2Children);
 	};
 		GameObject duplicateGameObject(GameObject obj);
 }

@@ -12,6 +12,7 @@ Engine::GameObject::GameObject(Shader prog, void(*drawf)(Engine::GameObject obj1
 	parentId = -1;
 	uniqueId = uniqueId = Numbers::giveId();
 	modelMatrix = MatrixFactory::identity();
+	tranformations = MatrixFactory::identity();
 	drawfunc = drawf;
 	geoFunc = geof;
 	_prog = prog;
@@ -60,10 +61,22 @@ EngineMath::mat4 Engine::GameObject::getModelMatrix()
 	return modelMatrix;
 }
 
+void Engine::GameObject::push(EngineMath::mat4 transformation, bool apply2Children)
+{
+	if (!apply2Children) {
+		modelMatrix = transformation * modelMatrix;
+	}
+	else {
+		tranformations = transformation * tranformations;
+	}
+}
+
 Engine::GameObject Engine::duplicateGameObject(GameObject obj)
 {
 	Engine::GameObject aux = Engine::GameObject(obj._prog,obj.drawfunc, obj.geoFunc);
 	aux.geo = obj.geo;
+	aux.parentId = obj.parentId;
 	aux.modelMatrix = obj.modelMatrix;
+	aux.tranformations = obj.tranformations;
 	return aux;
 }
