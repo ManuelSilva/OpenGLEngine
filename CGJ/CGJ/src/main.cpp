@@ -41,7 +41,7 @@ void update(float delta)
 	GETCORE
 	float aspect = (core->_Active_GLUT_Properties.Engine_windowSize_x*1.0f) / (core->_Active_GLUT_Properties.Engine_windowSize_y*1.0f);
 	static bool isOrtho = false;
-	float speed = 1.f;
+	float speed = 10.f;
 	
 	//--------------------------------------------
 	{
@@ -90,10 +90,10 @@ void update(float delta)
 		if (core->keyboard_state['p']) {
 			isOrtho = !isOrtho;
 			if (isOrtho) {
-				_mainCamera.setOrtho(10, -10, -10, 10, -10, 10);
+				_mainCamera.setOrtho(100, -100, -100, 100, -100, 100);
 			}
 			else {
-				_mainCamera.setPerspective(30, aspect, .1f, 10);
+				_mainCamera.setPerspective(30, aspect, .1f, 100);
 			}
 		}
 		if (core->keyboard_state['g']) {
@@ -156,9 +156,25 @@ void createScene() {
 	//CreateScene
 	Engine::Scene mainScene = core->_mainScene;
 	//------------------------------------------
-	
+
+
+	Engine::GameObject floor = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
+	floor.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
+	floor.modelMatrix = MatrixFactory::ScaleMatrix(EngineMath::vec3(10,10,.5)) * MatrixFactory::TranslationMatrix(EngineMath::vec3(0,0,-10)) * floor.modelMatrix;
+
+
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
-	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("suzzane.obj"));
+	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
+	//cube.setParent(floor);
+
+	Engine::GameObject paralelogram = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
+	paralelogram.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("shape2.obj"));
+	paralelogram.modelMatrix = MatrixFactory::RotationYMatrix(PI / 2) * paralelogram.modelMatrix;
+	//paralelogram.setParent(floor);
+
+
+	mainScene.push(floor);
+	mainScene.push(paralelogram);
 	mainScene.push(cube);
 	//----------------------------------------------------------------------------------------------------
 
