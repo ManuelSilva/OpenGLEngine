@@ -112,19 +112,19 @@ void update(float delta)
 		if (core->keyboard_state['m']) {
 			core->mouseFlag = !core->mouseFlag;
 		}
+		if(core->keyboard_state['j']){
+		
+		}
+		if (core->keyboard_state['l']) {
+
+		}
 		
 		core->initKeyboard();
 	}
 	//---------------------------------------------
 
 	if (flag) {
-		for (std::map<unsigned int, Engine::GameObject>::iterator it = core->_mainScene._gameObjects.begin(); it != core->_mainScene._gameObjects.end(); ++it)
-		{
-			Engine::GameObject obj = it->second;
-			if (obj.tag == "Animate") {
-				animate(obj);
-			}
-		}
+		core->_mainScene = animate();
 	}
 
 }
@@ -210,19 +210,43 @@ void createScene() {
 	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1, 5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)) * MatrixFactory::RotationZMatrix((PI*3)/4), true);
 	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(6, 0, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1))  * MatrixFactory::RotationZMatrix(PI/4), true);
 
+	triangle1.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(4,-5,0)) * MatrixFactory::RotationZMatrix(7*PI/4),true);
+
+	//-----------------------------------------------------
+
+	cube.tag = "Animate";
+	cube.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
+	paralelogram.tag = "Animate";
+	paralelogram.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
+	triangle1.tag = "Animate";
+	triangle1.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
+	triangle2.tag = "Animate";
+	triangle2.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
+	triangle3.tag = "Animate";
+	triangle3.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
+	triangle4.tag = "Animate";
+	triangle4.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+
 	triangle5.tag = "Animate";
 	triangle5.animationInfo.target_position = EngineMath::vec3(-5,2,0);
 
-	triangle1.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(4,-5,0)) * MatrixFactory::RotationZMatrix(7*PI/4),true);
+
+
+	//-----------------------------------------------------
 
 	mainScene.push(floor);
 	mainScene.push(cube);
 	mainScene.push(paralelogram);
-	mainScene.push(triangle1);//done
-	mainScene.push(triangle2);//done
-	mainScene.push(triangle3);//done
-	mainScene.push(triangle4);//done
-	mainScene.push(triangle5);//done
+	mainScene.push(triangle1);
+	mainScene.push(triangle2);
+	mainScene.push(triangle3);
+	mainScene.push(triangle4);
+	mainScene.push(triangle5);
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -323,26 +347,33 @@ Engine::Shader shaderSetUp() {
 	return shaderProg;
 }
 
-void animate(Engine::GameObject obj)
+Engine::Scene animate()
 {
 	GETCORE
 
-	Engine::AnimationInfo info = obj.animationInfo;
-	if (info.rate < 1.00f) {
-		EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
-		obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);
-		info.prevLerp = lerp;
-		info.rate += core->getDeltaTime()*info.speed;
-	}
-	else {
-		info.rate = 1.00f;
-	}
+	Engine::Scene scene = core->_mainScene;
+	for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
+	{
+		Engine::GameObject obj = it->second;
+		if (obj.tag == "Animate") {
+		
+			Engine::AnimationInfo info = obj.animationInfo;
+			if (info.rate < 1.00f) {
+				EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
+				obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);
+				info.prevLerp = lerp;
+				info.rate += core->getDeltaTime()*info.speed;
+			}
+			else {
+				info.rate = 1.00f;
+			}
 	
-	// do the same for rotation
+			obj.animationInfo = info;
+			scene._gameObjects[obj.uniqueId] = obj;
+		}
+	}
 
-
-	obj.animationInfo = info;
-	core->_mainScene._gameObjects[obj.uniqueId] = obj;
+	return scene;
 }
 
 void switchAnimation() {

@@ -34,7 +34,7 @@ void geometryFunction(Engine::GameObject obj);
 void geometryDraw(Engine::GameObject obj);
 Engine::Shader shaderSetUp();
 
-void animate(Engine::GameObject obj);
+Engine::Scene animate();
 void switchAnimation();
 
 #endif // !__MAIN_H__
