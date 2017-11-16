@@ -11,6 +11,8 @@
 #include <string>
 #include <random>
 #include <map>
+#include <algorithm>
+
 
 Engine::EngineCore* Engine::EngineCore::_EngineCore_instance;	
 #define SHADER_PATH ".\\..\\..\\dependencies\\shaders\\"
@@ -23,6 +25,7 @@ Engine::EngineCore* Engine::EngineCore::_EngineCore_instance;
 
 Engine::Camera _mainCamera(MatrixFactory::identity());
 
+unsigned int backgroundID = -1;
 
 void render();
 void update(float delta);

@@ -10,16 +10,16 @@ namespace Engine {
 
 	struct AnimationInfo {
 		EngineMath::vec3 initial_position = EngineMath::vec3(0,0,0);
-		EngineMath::Quaternion initial_rotation = EngineMath::Quaternion();
-		EngineMath::vec3 initial_scale = EngineMath::vec3(0,0,0);
+		float initial_rotation = 0.0f;
 
 		EngineMath::vec3 target_position = EngineMath::vec3(0, 0, 0);
-		EngineMath::Quaternion target_rotation = EngineMath::Quaternion();
-		EngineMath::vec3 target_scale = EngineMath::vec3(0, 0, 0);
+		float target_rotation = 0.0f;
 
 		EngineMath::vec3 prevLerp = EngineMath::vec3(0, 0, 0);
+		float prevLerpRot = 0;
 
 		float rate = 0;
+		float rot_rate = 0;
 		float speed = 1;
 	};
 

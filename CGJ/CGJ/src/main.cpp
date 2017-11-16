@@ -46,6 +46,7 @@ void update(float delta)
 	static bool flag = false;
 	
 	//--------------------------------------------
+	//Input
 	{
 		//engine_keyboardInput
 		//initKeyboard
@@ -113,10 +114,10 @@ void update(float delta)
 			core->mouseFlag = !core->mouseFlag;
 		}
 		if(core->keyboard_state['j']){
-		
+			core->_mainScene._gameObjects[backgroundID].push(MatrixFactory::TranslationMatrix(EngineMath::vec3(2*delta,0,0)), true);
 		}
 		if (core->keyboard_state['l']) {
-
+			core->_mainScene._gameObjects[backgroundID].push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-2 * delta, 0, 0)), true);
 		}
 		
 		core->initKeyboard();
@@ -182,12 +183,13 @@ void createScene() {
 	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(15,15,.5)),false);
 	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(.2, .2, .2)) * MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 0, -3)), true);
 	floor.tag = "Floor";
+	backgroundID = floor.uniqueId;
 	
 
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
 	cube.setParent(floor);
-	cube.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1.5, -2.8, 1.8)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(1.5,1.5,1)) * MatrixFactory::RotationZMatrix(PI/4), true);
+	cube.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1.5, -2.8, 1.8)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(1.5,1.5,1)) * MatrixFactory::RotationZMatrix(PI/4) * MatrixFactory::RotationXMatrix(PI / 2), true);
 
 
 	Engine::GameObject paralelogram = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
@@ -216,25 +218,35 @@ void createScene() {
 	//-----------------------------------------------------
 
 	cube.tag = "Animate";
-	cube.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	cube.animationInfo.target_position = EngineMath::vec3(5, -5, 0);
+	cube.animationInfo.target_rotation = PI/2;
 
 	paralelogram.tag = "Animate";
-	paralelogram.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	paralelogram.animationInfo.target_position = EngineMath::vec3(5, 5, 0);
+	paralelogram.animationInfo.target_rotation = PI/3;
+
 
 	triangle1.tag = "Animate";
-	triangle1.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	triangle1.animationInfo.target_position = EngineMath::vec3(-5, 5, 0);
+	triangle1.animationInfo.target_rotation = PI/4;
+
 
 	triangle2.tag = "Animate";
-	triangle2.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	triangle2.animationInfo.target_position = EngineMath::vec3(5, -5, 0);
+	triangle2.animationInfo.target_rotation = PI/6;
 
 	triangle3.tag = "Animate";
-	triangle3.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	triangle3.animationInfo.target_position = EngineMath::vec3(-3, 2, 0);
+	triangle3.animationInfo.target_rotation = PI;
+
 
 	triangle4.tag = "Animate";
-	triangle4.animationInfo.target_position = EngineMath::vec3(-5, 2, 0);
+	triangle4.animationInfo.target_position = EngineMath::vec3(-2, -2, 0);
+	triangle4.animationInfo.target_rotation = PI;
 
 	triangle5.tag = "Animate";
-	triangle5.animationInfo.target_position = EngineMath::vec3(-5,2,0);
+	triangle5.animationInfo.target_position = EngineMath::vec3(3,2,0);
+	triangle5.animationInfo.target_rotation = PI;
 
 
 
@@ -368,6 +380,17 @@ Engine::Scene animate()
 			else {
 				info.rate = 1.00f;
 			}
+			if (info.rot_rate < 1.00f) {
+				info.rot_rate = std::max(0.0f, std::min(info.rot_rate, 1.0f));
+				float lerp = (info.initial_rotation + info.rot_rate*(info.target_rotation - info.initial_rotation));
+				obj.push(MatrixFactory::RotationYMatrix(lerp - info.prevLerpRot),false);
+				info.prevLerpRot = lerp;
+				info.rot_rate += delta * info.speed;
+			}
+			else {
+				info.rot_rate = 1.00f;
+			}
+
 	
 			obj.animationInfo = info;
 			scene._gameObjects[obj.uniqueId] = obj;
@@ -387,6 +410,12 @@ void switchAnimation() {
 			EngineMath::vec3 aux = obj.animationInfo.target_position;
 			obj.animationInfo.target_position = obj.animationInfo.initial_position;
 			obj.animationInfo.initial_position = aux;
+
+			obj.animationInfo.rot_rate = 1 - obj.animationInfo.rot_rate;
+			float auxr = obj.animationInfo.initial_rotation;
+			obj.animationInfo.initial_rotation = obj.animationInfo.target_rotation;
+			obj.animationInfo.target_rotation = auxr;
+
 			core->_mainScene._gameObjects[obj.uniqueId] = obj;
 		}
 	}
