@@ -22,7 +22,9 @@ int main(int argc, char* argv[])
 		core->setUpMouseFunc(mouseInput);
 		core->setUpUpdateFunc(update);
 
+
 		core->startEngine(argc,argv);
+
 
 		WAIT
 }
@@ -252,6 +254,11 @@ void createScene() {
 
 	//-----------------------------------------------------
 
+	Engine::GameObject suzzane = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
+	suzzane.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("suzzane.obj"));
+	suzzane.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 0, -5)) * MatrixFactory::RotationZMatrix(PI), true);
+
+
 	mainScene.push(floor);
 	mainScene.push(cube);
 	mainScene.push(paralelogram);
@@ -260,6 +267,8 @@ void createScene() {
 	mainScene.push(triangle3);
 	mainScene.push(triangle4);
 	mainScene.push(triangle5);
+	mainScene.push(suzzane);
+
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -275,6 +284,9 @@ void createScene() {
 
 	core->_mainScene = mainScene;
 	std::cout << "Success Creating Scene!" << std::endl;
+
+	std::cout << "Controls:\nAWSD\t ->Camera \nG\t ->Gimbal Lock On/Off \nJ e L\t ->Move BackGround \n+ e -\t ->Zoom \nX\t ->AnimationSwitch \nM\t ->Mouse On/Off" << std::endl;
+
 }
 
 void geometryFunction(Engine::GameObject obj) {
@@ -371,6 +383,8 @@ Engine::Scene animate()
 		Engine::GameObject obj = it->second;
 		if (obj.tag == "Animate") {
 			Engine::AnimationInfo info = obj.animationInfo;
+			//if animation takes too long change this
+			info.speed = 0.1;
 			if (info.rate < 1.00f) {
 				EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
 				obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);

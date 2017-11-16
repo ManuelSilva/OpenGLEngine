@@ -11,7 +11,7 @@
 
 #define GETCORE Engine::EngineCore *core = Engine::EngineCore::getEngineCore();
 #define WAIT int wait = 0; std::cin >> wait;
-#define FPS 60
+#define FPS 30
 
 static int _WindowHandle;
 
