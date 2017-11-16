@@ -127,6 +127,7 @@ void update(float delta)
 		core->_mainScene = animate();
 	}
 
+
 }
 
 //-----------------------------------------------------
@@ -352,17 +353,17 @@ Engine::Scene animate()
 	GETCORE
 
 	Engine::Scene scene = core->_mainScene;
+	float delta = core->getDeltaTime();
 	for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
 	{
 		Engine::GameObject obj = it->second;
 		if (obj.tag == "Animate") {
-		
 			Engine::AnimationInfo info = obj.animationInfo;
 			if (info.rate < 1.00f) {
 				EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
 				obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);
 				info.prevLerp = lerp;
-				info.rate += core->getDeltaTime()*info.speed;
+				info.rate += delta*info.speed;
 			}
 			else {
 				info.rate = 1.00f;
