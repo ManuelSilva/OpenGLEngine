@@ -5,6 +5,7 @@ Engine::GameObject::GameObject()
 {
 	parentId = -1;
 	uniqueId = uniqueId = Numbers::giveId();
+	tag = "";
 }
 
 Engine::GameObject::GameObject(Shader prog, void(*drawf)(Engine::GameObject obj1), void(*geof)(Engine::GameObject obj2))
@@ -16,6 +17,7 @@ Engine::GameObject::GameObject(Shader prog, void(*drawf)(Engine::GameObject obj1
 	drawfunc = drawf;
 	geoFunc = geof;
 	_prog = prog;
+	tag = "";
 }
 
 Engine::GameObject::~GameObject()
@@ -71,6 +73,8 @@ void Engine::GameObject::push(EngineMath::mat4 transformation, bool apply2Childr
 	}
 }
 
+
+
 Engine::GameObject Engine::duplicateGameObject(GameObject obj)
 {
 	Engine::GameObject aux = Engine::GameObject(obj._prog,obj.drawfunc, obj.geoFunc);
@@ -78,5 +82,6 @@ Engine::GameObject Engine::duplicateGameObject(GameObject obj)
 	aux.parentId = obj.parentId;
 	aux.modelMatrix = obj.modelMatrix;
 	aux.tranformations = obj.tranformations;
+	aux.tag = obj.tag;
 	return aux;
 }

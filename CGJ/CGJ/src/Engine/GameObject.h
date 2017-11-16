@@ -8,6 +8,20 @@
 
 namespace Engine {
 
+	struct AnimationInfo {
+		EngineMath::vec3 initial_position = EngineMath::vec3(0,0,0);
+		EngineMath::Quaternion initial_rotation = EngineMath::Quaternion();
+		EngineMath::vec3 initial_scale = EngineMath::vec3(0,0,0);
+
+		EngineMath::vec3 target_position = EngineMath::vec3(0, 0, 0);
+		EngineMath::Quaternion target_rotation = EngineMath::Quaternion();
+		EngineMath::vec3 target_scale = EngineMath::vec3(0, 0, 0);
+
+		EngineMath::vec3 prevLerp = EngineMath::vec3(0, 0, 0);
+
+		float rate = 0;
+	};
+
 
 	class GameObject {
 	public:
@@ -15,14 +29,15 @@ namespace Engine {
 		void(*geoFunc)(Engine::GameObject obj);
 
 	public:
-		EngineMath::mat4 tranformations;
 		EngineMath::mat4 modelMatrix;
+		EngineMath::mat4 tranformations;
 		unsigned int uniqueId;
 		unsigned int parentId;
 		std::vector<unsigned int> children;
 		std::string tag;
 		Shader _prog;
 		Mesh::Mesh geo;
+		AnimationInfo animationInfo;
 	public:
 		GameObject();
 		GameObject(Shader prog, void(*drawfunc)(Engine::GameObject obj1), void(*geofunc)(Engine::GameObject obj2));

@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 #include <stdlib.h>
 #include <iostream>
-
+#include <algorithm>
 namespace EngineMath{
 
 	class vec2 {
@@ -120,6 +120,8 @@ namespace EngineMath{
 	vec3 rodriguezFormula(vec3 v, vec3 around, GLfloat teta);
 
 	vec3 clean(vec3 v, GLfloat eps);
+
+	vec3 lerp(vec3 start, vec3 finish, float rate);
 
 	class vec4 {
 		public:

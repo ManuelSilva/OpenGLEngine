@@ -330,6 +330,12 @@ namespace EngineMath {
 		return v;
 	}
 
+	vec3 lerp(vec3 start, vec3 finish, float rate)
+	{
+		std::max(0.0f, std::min(rate, 1.0f));
+		return  (start + rate*(finish - start));
+	}
+
 	//------------------------------------------------------------------
 
 	vec4::vec4(GLfloat e0, GLfloat e1, GLfloat e2, GLfloat e3)

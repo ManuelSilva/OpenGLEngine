@@ -43,6 +43,9 @@ void update(float delta)
 	static bool isOrtho = false;
 	float speed = 10.f;
 	
+	static bool flag = false;
+	
+	Engine::Scene scene = core->_mainScene;
 	//--------------------------------------------
 	{
 		//engine_keyboardInput
@@ -91,6 +94,7 @@ void update(float delta)
 			isOrtho = !isOrtho;
 			if (isOrtho) {
 				_mainCamera.setOrtho(100, -100, -100, 100, -100, 100);
+				_mainCamera.orthoScaleFactor = 14*speed*delta;
 			}
 			else {
 				_mainCamera.setPerspective(30, aspect, .1f, 100);
@@ -100,7 +104,21 @@ void update(float delta)
 			_mainCamera.gimbalLock = !_mainCamera.gimbalLock;
 		}
 		if (core->keyboard_state['x']) {
-			exit(EXIT_SUCCESS);
+			if (flag) {
+				for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
+				{
+					Engine::GameObject obj = it->second;
+					if (obj.tag == "Animate") {
+						obj.animationInfo.rate = 1 - obj.animationInfo.rate;
+						EngineMath::vec3 aux = obj.animationInfo.target_position;
+						obj.animationInfo.target_position = obj.animationInfo.initial_position;
+						obj.animationInfo.initial_position = aux;
+						scene._gameObjects[obj.uniqueId] = obj;
+					}
+				}
+			}
+			flag = true;
+
 		}
 		if (core->keyboard_state['m']) {
 			core->mouseFlag = !core->mouseFlag;
@@ -109,6 +127,17 @@ void update(float delta)
 		core->initKeyboard();
 	}
 	//---------------------------------------------
+
+	if (flag) {
+		for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
+		{
+			Engine::GameObject obj = it->second;
+			if (obj.tag == "Animate") {
+				animate(obj);
+			}
+		}
+	}
+
 }
 
 //-----------------------------------------------------
@@ -162,6 +191,7 @@ void createScene() {
 	floor.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
 	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(15,15,.5)),false);
 	floor.push(MatrixFactory::ScaleMatrix(EngineMath::vec3(.2, .2, .2)) * MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 0, -3)), true);
+	floor.tag = "Floor";
 	
 
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
@@ -173,7 +203,7 @@ void createScene() {
 	Engine::GameObject paralelogram = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	paralelogram.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("shape2.obj"));
 	paralelogram.setParent(floor);
-	paralelogram.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, -3, 1.8)) * MatrixFactory::RotationYMatrix(PI / 2), true);
+	paralelogram.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, -3, 1.8)) * MatrixFactory::RotationXMatrix(PI / 2) * MatrixFactory::RotationYMatrix(PI / 2), true);
 	
 
 
@@ -186,23 +216,29 @@ void createScene() {
 	Engine::GameObject triangle4 = Engine::duplicateGameObject(triangle1);
 	Engine::GameObject triangle5 = Engine::duplicateGameObject(triangle1);
 
-	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(2, 2, 0)), true);
-	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(2, 8, 0))* MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)), true);
-	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-4, 4, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)), true);
-	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(8, 8, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)), true);
+	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-3, -3, 0)), true);
+	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-2, -5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)) * MatrixFactory::RotationZMatrix(-PI/4), true);
+	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1, 5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)) * MatrixFactory::RotationZMatrix((PI*3)/4), true);
+	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(6, 0, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1))  * MatrixFactory::RotationZMatrix(PI/4), true);
+
+	triangle5.tag = "Animate";
+	triangle5.animationInfo.target_position = EngineMath::vec3(5,2,0);
 
 
 	mainScene.push(floor);
-	mainScene.push(cube);
-	mainScene.push(paralelogram);
+	//mainScene.push(cube);
+	//mainScene.push(paralelogram);
 
-	mainScene.push(triangle1);
-	mainScene.push(triangle2);
-	mainScene.push(triangle3);
-	mainScene.push(triangle4);
+	//mainScene.push(triangle1);
+	//mainScene.push(triangle2);
+	//mainScene.push(triangle3);
+	//mainScene.push(triangle4);
 	mainScene.push(triangle5);
 
 	//----------------------------------------------------------------------------------------------------
+
+
+
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -297,3 +333,29 @@ Engine::Shader shaderSetUp() {
 	core->checkOpenGLError("ERROR: Could not create shaders.");
 	return shaderProg;
 }
+
+void animate(Engine::GameObject obj)
+{
+	GETCORE
+
+	Engine::AnimationInfo info = obj.animationInfo;
+	if (info.rate < 1.00f) {
+		EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
+		obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);
+		info.prevLerp = lerp;
+		info.rate += core->getDeltaTime();
+	}
+	else {
+		info.rate = 1.00f;
+	}
+	
+	// do the same for rotation
+
+
+	obj.animationInfo = info;
+	core->_mainScene._gameObjects[obj.uniqueId] = obj;
+}
+
+
+
+
