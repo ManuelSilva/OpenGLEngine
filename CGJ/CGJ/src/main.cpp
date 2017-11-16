@@ -186,13 +186,13 @@ void createScene() {
 	Engine::GameObject cube = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
 	cube.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("cube_vn.obj"));
 	cube.setParent(floor);
-	cube.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, 3, 1.8)), true);
+	cube.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1.5, -2.8, 1.8)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(1.5,1.5,1)) * MatrixFactory::RotationZMatrix(PI/4), true);
 
 
 	Engine::GameObject paralelogram = Engine::GameObject(shaderSetUp(), geometryDraw, geometryFunction);
-	paralelogram.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("shape2.obj"));
+	paralelogram.geo = Mesh::createMesh(std::string(OBJ_PATH) + std::string("paralelogram.obj"));
 	paralelogram.setParent(floor);
-	paralelogram.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(0, -3, 1.8)) * MatrixFactory::RotationXMatrix(PI / 2) * MatrixFactory::RotationYMatrix(PI / 2), true);
+	paralelogram.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-2.5, 1, 1.8)) * MatrixFactory::RotationXMatrix(PI / 2) * MatrixFactory::RotationYMatrix(PI), true);
 	
 
 
@@ -206,19 +206,19 @@ void createScene() {
 	Engine::GameObject triangle5 = Engine::duplicateGameObject(triangle1);
 
 	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-1, 0, 0)) * MatrixFactory::RotationZMatrix(-(3*PI) / 4), true);
-	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-1, -5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)) * MatrixFactory::RotationZMatrix(-PI/4), true);
+	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-1.5, -3, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)) * MatrixFactory::RotationZMatrix(PI/2), true);
 	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1, 5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)) * MatrixFactory::RotationZMatrix((PI*3)/4), true);
 	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(6, 0, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1))  * MatrixFactory::RotationZMatrix(PI/4), true);
 
 	triangle5.tag = "Animate";
 	triangle5.animationInfo.target_position = EngineMath::vec3(-5,2,0);
 
+	triangle1.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(4,-5,0)) * MatrixFactory::RotationZMatrix(7*PI/4),true);
 
 	mainScene.push(floor);
-	//mainScene.push(cube);
-	//mainScene.push(paralelogram);
-
-	mainScene.push(triangle1);
+	mainScene.push(cube);
+	mainScene.push(paralelogram);
+	mainScene.push(triangle1);//done
 	mainScene.push(triangle2);//done
 	mainScene.push(triangle3);//done
 	mainScene.push(triangle4);//done
