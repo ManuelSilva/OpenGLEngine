@@ -49,7 +49,7 @@ void update(float delta)
 	{
 		//engine_keyboardInput
 		//initKeyboard
-		float sensitivity = 1.0f;
+		float sensitivity = 10.0f;
 		if (!_mainCamera.gimbalLock) {
 			sensitivity = 100.0f;
 		}
@@ -205,24 +205,24 @@ void createScene() {
 	Engine::GameObject triangle4 = Engine::duplicateGameObject(triangle1);
 	Engine::GameObject triangle5 = Engine::duplicateGameObject(triangle1);
 
-	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-3, -3, 0)), true);
-	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-2, -5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)) * MatrixFactory::RotationZMatrix(-PI/4), true);
+	triangle2.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-1, 0, 0)) * MatrixFactory::RotationZMatrix(-(3*PI) / 4), true);
+	triangle3.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(-1, -5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(2, 2, 1)) * MatrixFactory::RotationZMatrix(-PI/4), true);
 	triangle4.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(1, 5, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1)) * MatrixFactory::RotationZMatrix((PI*3)/4), true);
 	triangle5.push(MatrixFactory::TranslationMatrix(EngineMath::vec3(6, 0, 0)) * MatrixFactory::ScaleMatrix(EngineMath::vec3(3, 3, 1))  * MatrixFactory::RotationZMatrix(PI/4), true);
 
 	triangle5.tag = "Animate";
-	triangle5.animationInfo.target_position = EngineMath::vec3(5,2,0);
+	triangle5.animationInfo.target_position = EngineMath::vec3(-5,2,0);
 
 
 	mainScene.push(floor);
 	//mainScene.push(cube);
 	//mainScene.push(paralelogram);
 
-	//mainScene.push(triangle1);
-	//mainScene.push(triangle2);
-	//mainScene.push(triangle3);
-	//mainScene.push(triangle4);
-	mainScene.push(triangle5);
+	mainScene.push(triangle1);
+	mainScene.push(triangle2);//done
+	mainScene.push(triangle3);//done
+	mainScene.push(triangle4);//done
+	mainScene.push(triangle5);//done
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -332,7 +332,7 @@ void animate(Engine::GameObject obj)
 		EngineMath::vec3 lerp = EngineMath::lerp(info.initial_position, info.target_position, info.rate);
 		obj.push(MatrixFactory::TranslationMatrix(lerp - info.prevLerp),true);
 		info.prevLerp = lerp;
-		info.rate += core->getDeltaTime();
+		info.rate += core->getDeltaTime()*info.speed;
 	}
 	else {
 		info.rate = 1.00f;

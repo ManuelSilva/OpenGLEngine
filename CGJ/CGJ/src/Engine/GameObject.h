@@ -20,6 +20,7 @@ namespace Engine {
 		EngineMath::vec3 prevLerp = EngineMath::vec3(0, 0, 0);
 
 		float rate = 0;
+		float speed = 1;
 	};
 
 
