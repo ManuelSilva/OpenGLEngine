@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 		core->setUpRenderFunc(render);
 		core->setUpSceneCreateFunc(createScene);
 		core->setUpMouseFunc(mouseInput);
+		core->setUpUpdateFunc(update);
 
 		core->startEngine(argc,argv);
 
@@ -30,7 +31,6 @@ int main(int argc, char* argv[])
 void render() {
 	GETCORE
 	_mainCamera.ApplyViewMatrix();
-	update(core->getDeltaTime());
 	++core->_FrameCount;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	core->_mainScene.draw(_mainCamera);
@@ -45,11 +45,14 @@ void update(float delta)
 	
 	static bool flag = false;
 	
-	Engine::Scene scene = core->_mainScene;
 	//--------------------------------------------
 	{
 		//engine_keyboardInput
 		//initKeyboard
+		float sensitivity = 1.0f;
+		if (!_mainCamera.gimbalLock) {
+			sensitivity = 100.0f;
+		}
 
 
 		if (core->keyboard_state['+']) {
@@ -69,10 +72,6 @@ void update(float delta)
 				_mainCamera.orthoScaleFactor -= speed*delta;
 			}
 			_mainCamera._viewDirty = true;
-		}
-		float sensitivity = 1.0f;
-		if (!_mainCamera.gimbalLock) {
-			sensitivity = 100.0f;
 		}
 		if (core->keyboard_state['w']) {
 			_mainCamera.pitch += delta*sensitivity;
@@ -94,7 +93,7 @@ void update(float delta)
 			isOrtho = !isOrtho;
 			if (isOrtho) {
 				_mainCamera.setOrtho(100, -100, -100, 100, -100, 100);
-				_mainCamera.orthoScaleFactor = 14*speed*delta;
+				_mainCamera.orthoScaleFactor = 14;
 			}
 			else {
 				_mainCamera.setPerspective(30, aspect, .1f, 100);
@@ -105,17 +104,7 @@ void update(float delta)
 		}
 		if (core->keyboard_state['x']) {
 			if (flag) {
-				for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
-				{
-					Engine::GameObject obj = it->second;
-					if (obj.tag == "Animate") {
-						obj.animationInfo.rate = 1 - obj.animationInfo.rate;
-						EngineMath::vec3 aux = obj.animationInfo.target_position;
-						obj.animationInfo.target_position = obj.animationInfo.initial_position;
-						obj.animationInfo.initial_position = aux;
-						scene._gameObjects[obj.uniqueId] = obj;
-					}
-				}
+				switchAnimation();
 			}
 			flag = true;
 
@@ -129,7 +118,7 @@ void update(float delta)
 	//---------------------------------------------
 
 	if (flag) {
-		for (std::map<unsigned int, Engine::GameObject>::iterator it = scene._gameObjects.begin(); it != scene._gameObjects.end(); ++it)
+		for (std::map<unsigned int, Engine::GameObject>::iterator it = core->_mainScene._gameObjects.begin(); it != core->_mainScene._gameObjects.end(); ++it)
 		{
 			Engine::GameObject obj = it->second;
 			if (obj.tag == "Animate") {
@@ -354,6 +343,21 @@ void animate(Engine::GameObject obj)
 
 	obj.animationInfo = info;
 	core->_mainScene._gameObjects[obj.uniqueId] = obj;
+}
+
+void switchAnimation() {
+	GETCORE
+	for (std::map<unsigned int, Engine::GameObject>::iterator it = core->_mainScene._gameObjects.begin(); it != core->_mainScene._gameObjects.end(); ++it)
+	{
+		Engine::GameObject obj = it->second;
+		if (obj.tag == "Animate") {
+			obj.animationInfo.rate = 1 - obj.animationInfo.rate;
+			EngineMath::vec3 aux = obj.animationInfo.target_position;
+			obj.animationInfo.target_position = obj.animationInfo.initial_position;
+			obj.animationInfo.initial_position = aux;
+			core->_mainScene._gameObjects[obj.uniqueId] = obj;
+		}
+	}
 }
 
 

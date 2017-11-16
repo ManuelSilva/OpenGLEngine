@@ -11,7 +11,7 @@
 
 #define GETCORE Engine::EngineCore *core = Engine::EngineCore::getEngineCore();
 #define WAIT int wait = 0; std::cin >> wait;
-//#define FPS 60
+#define FPS 60
 
 static int _WindowHandle;
 
@@ -28,8 +28,8 @@ namespace Engine{
 	void engine_fpsLimit(int value);
 	void engine_PostRedisplay();
 	void engine_keyboardInput(unsigned char key, int x, int y);
-	void  engine_mouseInput(int x, int y);
-
+	void engine_mouseInput(int x, int y);
+	void engine_update(float delta);
 	void engine_CreateScene();
 
 
@@ -74,6 +74,7 @@ namespace Engine{
 		Scene _mainScene;
 		bool mouseFlag = false;
 
+		void(*updateFunc)(float delta) = engine_update;
 
 	private:
 		EngineCore();
@@ -101,6 +102,7 @@ namespace Engine{
 		void setUpClearFunc(void(*clear)());
 		void setUpKeyboardFunc(void(*keyboardFunc)(unsigned char key, int x, int y));
 		void setUpMouseFunc(void(*func)(int x, int y));
+		void setUpUpdateFunc(void(*func)(float delta));
 
 
 		float getDeltaTime();

@@ -35,8 +35,6 @@ void geometryDraw(Engine::GameObject obj);
 Engine::Shader shaderSetUp();
 
 void animate(Engine::GameObject obj);
-
-EngineMath::vec3 goTo(EngineMath::vec3 currentPos, EngineMath::vec3 targetPosition, float speed);
-
+void switchAnimation();
 
 #endif // !__MAIN_H__

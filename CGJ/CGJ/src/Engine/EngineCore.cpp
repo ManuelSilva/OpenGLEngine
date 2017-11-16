@@ -163,6 +163,11 @@ void Engine::EngineCore::setUpMouseFunc(void(*func)(int x, int y))
 	mouseFunc = func;
 }
 
+void Engine::EngineCore::setUpUpdateFunc(void(*func)(float delta))
+{
+	updateFunc = func;
+}
+
 float Engine::EngineCore::getDeltaTime()
 {
 	static float prev_time = 0;
@@ -217,9 +222,11 @@ void Engine::engine_display()
 
 void Engine::engine_idle()
 {
+	GETCORE
 #ifndef FPS
 	glutPostRedisplay();
 #endif // 
+	core->updateFunc(core->getDeltaTime());
 }
 
 void Engine::engine_cleanup()
@@ -306,6 +313,10 @@ void Engine::engine_keyboardInput(unsigned char key, int x, int y)
 void Engine::engine_mouseInput(int x, int y)
 {
 	std::cout << "Mouse Input\n" << "\nint x : " << x << "\nint y : " << y << std::endl;
+}
+
+void Engine::engine_update(float delta)
+{
 }
 
 void Engine::engine_CreateScene()
